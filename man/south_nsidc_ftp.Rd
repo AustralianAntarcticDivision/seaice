@@ -2,9 +2,12 @@
 % Please edit documentation in R/read_seaice.R
 \name{south_nsidc_ftp}
 \alias{south_nsidc_ftp}
+\alias{north_nsidc_ftp}
 \title{Generate NSIDC source links from a date}
 \usage{
 south_nsidc_ftp(date)
+
+north_nsidc_ftp(date)
 }
 \arguments{
 \item{date}{date-time, date, or convertible character string}
@@ -20,4 +23,5 @@ Details
 }
 \examples{
 south_nsidc_ftp("2010-01-01")
+north_nsidc_ftp("2010-01-01")
 }

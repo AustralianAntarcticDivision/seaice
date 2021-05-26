@@ -1,4 +1,4 @@
-globalVariables("nsidc_south_files")
+globalVariables("nsidc_south_sources")
 
 .si_rescale <- function(x) {
   x[x > 250] <- NA
@@ -8,8 +8,9 @@ globalVariables("nsidc_south_files")
   as.POSIXct(x, tz = "UTC")
 }
 .si_defaultdate <- function(x) {
-  max(nsidc_south_files$date)
+  max(nsidc_south_files()$date)
 }
+#' @importFrom raster raster projection extent
 .si_defaultgrid <- function(x) {
 
   if (missing(x) || is.null(x)) {

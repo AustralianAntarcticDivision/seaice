@@ -2,9 +2,13 @@
 % Please edit documentation in R/read_seaice.R
 \name{south_nsidc_vrt_text}
 \alias{south_nsidc_vrt_text}
+\alias{north_nsidc_text}
+\alias{north_nsidc_vrt_text}
 \title{Generate NSIDC Virtual Raster text from a date}
 \usage{
 south_nsidc_vrt_text(date)
+
+north_nsidc_vrt_text(date)
 }
 \arguments{
 \item{date}{date-time, date, or convertible character string}
@@ -20,4 +24,5 @@ Details
 }
 \examples{
 south_nsidc_vrt_text("2010-01-01")
+north_nsidc_vrt_text("2010-01-01")
 }

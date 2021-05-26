@@ -13,5 +13,6 @@ NULL
 #' might come up with a better solution. The available dates are also padded
 #' out to allow the last valid date to stand in for a missing one.
 #' @docType data
+#' @aliases nsidc_north_sources
 #' @format data frame of `date` and `url`
-"nsidc_south_files"
+"nsidc_south_sources"

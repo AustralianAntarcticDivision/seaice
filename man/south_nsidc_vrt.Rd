@@ -2,9 +2,12 @@
 % Please edit documentation in R/read_seaice.R
 \name{south_nsidc_vrt}
 \alias{south_nsidc_vrt}
+\alias{north_nsidc_vrt}
 \title{Generate NSIDC filename}
 \usage{
 south_nsidc_vrt(date)
+
+north_nsidc_vrt(date)
 }
 \arguments{
 \item{date}{date-time, date, or convertible character string}
@@ -20,4 +23,5 @@ Details
 }
 \examples{
 south_nsidc_vrt("2010-01-01")
+north_nsidc_vrt("2010-01-01")
 }

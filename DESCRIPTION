@@ -1,6 +1,6 @@
 Package: seaice
 Title: Build Temporary Virtual Raster Files for Sea Ice Concentration
-Version: 0.0.1
+Version: 0.0.0.9050
 Authors@R: 
     person(given = "Michael",
            family = "Sumner",
@@ -18,4 +18,5 @@ Depends:
     R (>= 3.6.0)
 Imports: 
     glue,
+    tibble,
     raster

@@ -1,3 +1,5 @@
-# seaice 0.0.1
+# seaice dev
+
+* Added northern hemisphere to existing southern. 
 
 * seaice exist. 
