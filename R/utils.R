@@ -1,8 +1,14 @@
+globalVariables("nsidc_south_files")
+
+.si_rescale <- function(x) {
+  x[x > 250] <- NA
+  x / 2.5
+}
 .si_timedate <- function(x) {
   as.POSIXct(x, tz = "UTC")
 }
 .si_defaultdate <- function(x) {
-  .si_timedate("2020-04-01")
+  max(nsidc_south_files$date)
 }
 .si_defaultgrid <- function(x) {
 
