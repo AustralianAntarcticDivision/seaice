@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">seaice</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9050</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9080</span>
       </span>
     </div>
 
@@ -63,13 +63,15 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div id="seaice" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#seaice" class="anchor"></a>seaice</h1></div>
 <!-- badges: start -->
 
 <p>The goal of seaice is to read sea ice concentration data directly from the internet. This package contains functions to find the right file URL for a given date, for either northern or southern hemisphere data.</p>
-<p>There are no read functions in the package itself, but there is example code to use for this. See examples below. This package contains a file list (where the file is on the internet, and the date it applies to) for a data file, and will construct a raster format that can be used to read the data directly. This happens via GDAL, using its virtual raster format “VRT”. A temporary file is created to store the information about the file at the URL, and then GDAL does the rest, downloading the file and reading from it into whatever grid/projection we specify.</p>
+<p>NOTE: you don’t need to use the functions in this package, see the example below which obtains a wrapper function <code>read_seaice()</code>. This package must exist to provide the tools for that to work, but for various reasons I don’t want the read function to be in this package.</p>
+<p>This package contains a file list (where the file is on the internet, and the date it applies to) for a data file, and will construct a raster format that can be used to read the data directly. This happens via GDAL, using its virtual raster format “VRT”. A temporary file is created to store the information about the file at the URL, and then GDAL does the rest, downloading the file and reading from it into whatever grid/projection we specify.</p>
 <p>With this we can</p>
 <ul>
 <li>read any date since 1978-10-26 (currently we are a bit limited to the latest but see todo)</li>
@@ -87,6 +89,8 @@
 <li>write helpers for terra, stars, base image(), netcdf output, whatever</li>
 <li>speed it up, currently a bit slow (25s for each file, but subsequent read of each day is fast because the file seems to be cached by GDAL or the OS)</li>
 </ul>
+<p>These files are binary and read over FTP, so the entire file is downloaded somewhere by GDAL (they are small). Other sources use GeoTIFF or NetCDF and we are exploring including those as well.</p>
+<p>Let us know what you think! See the <a href="https://github.com/AustralianAntarcticDivision/seaice/issues">Issues tab</a> to discuss, or post information about any problems you encounter.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -99,13 +103,23 @@
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<p>This is a basic example which shows you how to read sea ice data for any date since 1978-10-26. The data is projected onto a raster grid, with a global default provided. You can use the <code>xylim</code> argument to specify a specific raster in any projection.</p>
+<p>Go with the default.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">seaice</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"examples/read_seaice.R"</span>, package <span class="op">=</span> <span class="st">"seaice"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>  <span class="co"># we could use terra or stars or whatever, see todo </span>
 <span class="co">#&gt; Loading required package: sp</span>
-<span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="op">-</span><span class="fl">72</span>, <span class="op">-</span><span class="fl">55</span><span class="op">)</span>, res <span class="op">=</span> <span class="fl">0.2</span>, crs <span class="op">=</span> <span class="st">"+proj=longlat"</span><span class="op">)</span>
+
+<span class="va">icecol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html">grey.colors</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
+<span class="va">zl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>
+<span class="va">ice0</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice0</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<p>Usually we will want something more specific, like only the southern hemisphere. To do that, define the right raster grid and set the <code>xylim</code> argument with it.</p>
+<p>The source data for this function is 25km pixels, in a polar grid. We choose 0.2 in degrees as the resolution (about a fifth of 100km which is about the distance in a degree along a great circle).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="op">-</span><span class="fl">72</span>, <span class="op">-</span><span class="fl">55</span><span class="op">)</span>, res <span class="op">=</span> <span class="fl">0.2</span>, crs <span class="op">=</span> <span class="st">"+proj=longlat"</span><span class="op">)</span>
 <span class="op">(</span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span>, xylim <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; class      : RasterLayer </span>
 <span class="co">#&gt; dimensions : 85, 1800, 153000  (nrow, ncol, ncell)</span>
@@ -116,12 +130,10 @@
 <span class="co">#&gt; names      : layer </span>
 <span class="co">#&gt; values     : 1.2, 100  (min, max)</span>
 
-<span class="va">icecol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html">grey.colors</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
-<span class="va">zl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<p><img src="reference/figures/README-custom-1.png" width="100%"></p>
 <p>Or we can pick our own projection/grid that we want.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2e6</span>, <span class="fl">2e6</span>, <span class="op">-</span><span class="fl">1e6</span>, <span class="fl">1e6</span><span class="op">)</span>, res <span class="op">=</span> <span class="fl">25000</span>, crs <span class="op">=</span> <span class="st">"+proj=laea +lat_0=-60 +lon_0=180"</span><span class="op">)</span>
 <span class="va">pice</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span>, xylim <span class="op">=</span> <span class="va">rg</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">pice</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
@@ -132,13 +144,39 @@
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/contour.html">contour</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/setValues.html">setValues</a></span><span class="op">(</span><span class="va">rg</span>, <span class="va">ll</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/contour.html">contour</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/setValues.html">setValues</a></span><span class="op">(</span><span class="va">rg</span>, <span class="va">ll</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-projection-1.png" width="100%"></p>
+<p>To get exactly the grid used by this source data, use a bit of a trick.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/nsidc_south_vrt.html">nsidc_south_vrt</a></span><span class="op">(</span><span class="op">)</span> <span class="co">## date does not matter</span>
+<span class="co">## this is the grid, used by NSIDC, here in the abstract (no data in it)</span>
+<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">native</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span>, xylim <span class="op">=</span> <span class="va">g</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">native</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-native-1.png" width="100%"></p>
+<p>This grid is an old one, defined as ‘EPSG:3412’.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">native</span><span class="op">)</span>
+<span class="co">#&gt; class      : RasterLayer </span>
+<span class="co">#&gt; dimensions : 332, 316, 104912  (nrow, ncol, ncell)</span>
+<span class="co">#&gt; resolution : 25000, 25000  (x, y)</span>
+<span class="co">#&gt; extent     : -3950000, 3950000, -3950000, 4350000  (xmin, xmax, ymin, ymax)</span>
+<span class="co">#&gt; crs        : +proj=stere +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs </span>
+<span class="co">#&gt; source     : memory</span>
+<span class="co">#&gt; names      : layer </span>
+<span class="co">#&gt; values     : 1.2, 100  (min, max)</span></code></pre></div>
 </div>
+</div>
+<div id="get-involved" class="section level1">
+<h1 class="hasAnchor">
+<a href="#get-involved" class="anchor"></a>Get involved</h1>
+<p>Let us know what you think! See the <a href="https://github.com/AustralianAntarcticDivision/seaice/issues">Issues tab</a> to discuss, or post information about any problems you encounter.</p>
 <div id="code-of-conduct" class="section level2">
 <h2 class="hasAnchor">
 <a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
 <p>Please note that the seaice project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
