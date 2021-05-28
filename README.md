@@ -39,7 +39,11 @@ With this we can
     Mercator, or local equal area, etc)
 -   write helpers for terra, stars, base image(), netcdf output,
     whatever
--   speed it up, currently a bit slow \#\# Installation
+-   speed it up, currently a bit slow (25s for each file, but subsequent
+    read of each day is fast because the file seems to be cached by GDAL
+    or the OS)
+
+## Installation
 
 You can install the development version from
 [GitHub](https://github.com/) with:
