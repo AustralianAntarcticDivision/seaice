@@ -115,7 +115,7 @@
 <span class="va">zl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>
 <span class="va">ice0</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice0</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<p><img src="reference/figures/README-default-1.png" width="100%"></p>
 <p>Usually we will want something more specific, like only the southern hemisphere. To do that, define the right raster grid and set the <code>xylim</code> argument with it.</p>
 <p>The source data for this function is 25km pixels, in a polar grid. We choose 0.2 in degrees as the resolution (about a fifth of 100km which is about the distance in a degree along a great circle).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
