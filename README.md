@@ -17,6 +17,35 @@ example below which obtains a wrapper function `read_seaice()`. This
 package must exist to provide the tools for that to work, but for
 various reasons I don’t want the read function to be in this package.
 
+## Work in progress
+
+If you aren’t comfortable installing the development version of
+[vapour](https://github.com/hypertidy/vapour.git) (instructions are
+given by the example function), the please don’t actually try to run the
+example. You can explore the sources and temporary files created by the
+functions in this package, they are
+
+-   `nsidc_north_files`
+-   `nsidc_north_ftp`
+-   `nsidc_north_vrt`
+-   `nsidc_north_vrt_text`
+-   `nsidc_south_files`
+-   `nsidc_south_ftp`
+-   `nsidc_south_vrt`
+-   `nsidc_south_vrt_text`
+
+The `*files()` functions return a data frame of dates and URLs. The
+`*_ftp()` functions return the actual URL for a given date (a binary
+file). The `*_vrt()` functions return the path to a temporary VRT file
+that wraps the source URL for a given date with a [GDAL
+VRT](https://gdal.org/drivers/raster/vrt.html) virtual raster. The
+`*_vrt_text()` functions return the contents of the VRT file for a given
+date.
+
+The `read_seaice()` function defined below relies on dev-vapour package
+and wraps up the above to drive GDAL to return the data for a given data
+on your raster grid of choice.
+
 This package contains a file list (where the file is on the internet,
 and the date it applies to) for a data file, and will construct a raster
 format that can be used to read the data directly. This happens via
@@ -33,6 +62,9 @@ With this we can
     extent any where on the planet (the polar regions are really the
     only relevant ones, but we can use the entire earth or part of it)
 -   read both hemispheres in one call
+
+If you prefer stars or terra or raster or some other package, throw the
+VRT file path at their raster read functions. 👍
 
 ## TODO
 
@@ -97,12 +129,12 @@ choose 0.2 in degrees as the resolution (about a fifth of 100km which is
 about the distance in a degree along a great circle).
 
 ``` r
-r <- raster(extent(-180, 180, -72, -55), res = 0.2, crs = "+proj=longlat")
+r <- raster(extent(-180, 180, -76, -55), res = 0.2, crs = "+proj=longlat")
 (ice <- read_seaice("2020-10-15", xylim = r))
 #> class      : RasterLayer 
-#> dimensions : 85, 1800, 153000  (nrow, ncol, ncell)
+#> dimensions : 105, 1800, 189000  (nrow, ncol, ncell)
 #> resolution : 0.2, 0.2  (x, y)
-#> extent     : -180, 180, -72, -55  (xmin, xmax, ymin, ymax)
+#> extent     : -180, 180, -76, -55  (xmin, xmax, ymin, ymax)
 #> crs        : +proj=longlat +datum=WGS84 +no_defs 
 #> source     : memory
 #> names      : layer 
@@ -132,7 +164,7 @@ contour(setValues(rg, ll[,2]), add = TRUE)
 To get exactly the grid used by this source data, use a bit of a trick.
 
 ``` r
-tfile <- nsidc_south_vrt() ## date does not matter
+tfile <- nsidc_south_vrt() ## date does not matter, we just want the native grid specification so get the VRT
 ## this is the grid, used by NSIDC, here in the abstract (no data in it)
 g <- raster(raster(tfile))
 
@@ -142,7 +174,9 @@ plot(native, col = icecol, zlim = zl)
 
 <img src="man/figures/README-native-1.png" width="100%" />
 
-This grid is an old one, defined as ‘EPSG:3412’.
+This grid is an old one, defined as ‘EPSG:3412’. The north is
+‘EPSG:3411’ and that can be obtained the same, just replace ‘south’ with
+‘north’ in the code above.
 
 ``` r
 print(native)
