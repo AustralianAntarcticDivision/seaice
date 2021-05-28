@@ -71,6 +71,22 @@
 
 <p>The goal of seaice is to read sea ice concentration data directly from the internet. This package contains functions to find the right file URL for a given date, for either northern or southern hemisphere data.</p>
 <p>NOTE: you don’t need to use the functions in this package, see the example below which obtains a wrapper function <code>read_seaice()</code>. This package must exist to provide the tools for that to work, but for various reasons I don’t want the read function to be in this package.</p>
+<div id="work-in-progress" class="section level2">
+<h2 class="hasAnchor">
+<a href="#work-in-progress" class="anchor"></a>Work in progress</h2>
+<p>If you aren’t comfortable installing the development version of <a href="https://github.com/hypertidy/vapour.git">vapour</a> (instructions are given by the example function), the please don’t actually try to run the example. You can explore the sources and temporary files created by the functions in this package, they are</p>
+<ul>
+<li><code>nsidc_north_files</code></li>
+<li><code>nsidc_north_ftp</code></li>
+<li><code>nsidc_north_vrt</code></li>
+<li><code>nsidc_north_vrt_text</code></li>
+<li><code>nsidc_south_files</code></li>
+<li><code>nsidc_south_ftp</code></li>
+<li><code>nsidc_south_vrt</code></li>
+<li><code>nsidc_south_vrt_text</code></li>
+</ul>
+<p>The <code>*files()</code> functions return a data frame of dates and URLs. The <code>*_ftp()</code> functions return the actual URL for a given date (a binary file). The <code>*_vrt()</code> functions return the path to a temporary VRT file that wraps the source URL for a given date with a <a href="https://gdal.org/drivers/raster/vrt.html">GDAL VRT</a> virtual raster. The <code>*_vrt_text()</code> functions return the contents of the VRT file for a given date.</p>
+<p>The <code>read_seaice()</code> function defined below relies on dev-vapour package and wraps up the above to drive GDAL to return the data for a given data on your raster grid of choice.</p>
 <p>This package contains a file list (where the file is on the internet, and the date it applies to) for a data file, and will construct a raster format that can be used to read the data directly. This happens via GDAL, using its virtual raster format “VRT”. A temporary file is created to store the information about the file at the URL, and then GDAL does the rest, downloading the file and reading from it into whatever grid/projection we specify.</p>
 <p>With this we can</p>
 <ul>
@@ -78,6 +94,8 @@
 <li>specify a raster grid, of any resolution, any projection, and any extent any where on the planet (the polar regions are really the only relevant ones, but we can use the entire earth or part of it)</li>
 <li>read both hemispheres in one call</li>
 </ul>
+<p>If you prefer stars or terra or raster or some other package, throw the VRT file path at their raster read functions. 👍</p>
+</div>
 <div id="todo" class="section level2">
 <h2 class="hasAnchor">
 <a href="#todo" class="anchor"></a>TODO</h2>
@@ -119,12 +137,12 @@
 <p>Usually we will want something more specific, like only the southern hemisphere. To do that, define the right raster grid and set the <code>xylim</code> argument with it.</p>
 <p>The source data for this function is 25km pixels, in a polar grid. We choose 0.2 in degrees as the resolution (about a fifth of 100km which is about the distance in a degree along a great circle).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="op">-</span><span class="fl">72</span>, <span class="op">-</span><span class="fl">55</span><span class="op">)</span>, res <span class="op">=</span> <span class="fl">0.2</span>, crs <span class="op">=</span> <span class="st">"+proj=longlat"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="op">-</span><span class="fl">76</span>, <span class="op">-</span><span class="fl">55</span><span class="op">)</span>, res <span class="op">=</span> <span class="fl">0.2</span>, crs <span class="op">=</span> <span class="st">"+proj=longlat"</span><span class="op">)</span>
 <span class="op">(</span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span>, xylim <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; class      : RasterLayer </span>
-<span class="co">#&gt; dimensions : 85, 1800, 153000  (nrow, ncol, ncell)</span>
+<span class="co">#&gt; dimensions : 105, 1800, 189000  (nrow, ncol, ncell)</span>
 <span class="co">#&gt; resolution : 0.2, 0.2  (x, y)</span>
-<span class="co">#&gt; extent     : -180, 180, -72, -55  (xmin, xmax, ymin, ymax)</span>
+<span class="co">#&gt; extent     : -180, 180, -76, -55  (xmin, xmax, ymin, ymax)</span>
 <span class="co">#&gt; crs        : +proj=longlat +datum=WGS84 +no_defs </span>
 <span class="co">#&gt; source     : memory</span>
 <span class="co">#&gt; names      : layer </span>
@@ -146,14 +164,14 @@
 <p><img src="reference/figures/README-projection-1.png" width="100%"></p>
 <p>To get exactly the grid used by this source data, use a bit of a trick.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/nsidc_south_vrt.html">nsidc_south_vrt</a></span><span class="op">(</span><span class="op">)</span> <span class="co">## date does not matter</span>
+<code class="sourceCode R"><span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/nsidc_south_vrt.html">nsidc_south_vrt</a></span><span class="op">(</span><span class="op">)</span> <span class="co">## date does not matter, we just want the native grid specification so get the VRT</span>
 <span class="co">## this is the grid, used by NSIDC, here in the abstract (no data in it)</span>
 <span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">native</span> <span class="op">&lt;-</span> <span class="fu">read_seaice</span><span class="op">(</span><span class="st">"2020-10-15"</span>, xylim <span class="op">=</span> <span class="va">g</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">native</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-native-1.png" width="100%"></p>
-<p>This grid is an old one, defined as ‘EPSG:3412’.</p>
+<p>This grid is an old one, defined as ‘EPSG:3412’. The north is ‘EPSG:3411’ and that can be obtained the same, just replace ‘south’ with ‘north’ in the code above.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">native</span><span class="op">)</span>
 <span class="co">#&gt; class      : RasterLayer </span>
