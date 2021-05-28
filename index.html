@@ -74,16 +74,16 @@
 <div id="work-in-progress" class="section level2">
 <h2 class="hasAnchor">
 <a href="#work-in-progress" class="anchor"></a>Work in progress</h2>
-<p>If you aren’t comfortable installing the development version of <a href="https://github.com/hypertidy/vapour.git">vapour</a> (instructions are given by the example function), the please don’t actually try to run the example. You can explore the sources and temporary files created by the functions in this package, they are</p>
+<p>If you aren’t comfortable installing the development version of <a href="https://github.com/hypertidy/vapour.git">vapour</a> (instructions are given by the example function), then please don’t actually try to run the example. You can explore the sources and temporary files created by the functions in this package, they are</p>
 <ul>
-<li><code>nsidc_north_files</code></li>
-<li><code>nsidc_north_ftp</code></li>
-<li><code>nsidc_north_vrt</code></li>
-<li><code>nsidc_north_vrt_text</code></li>
-<li><code>nsidc_south_files</code></li>
-<li><code>nsidc_south_ftp</code></li>
-<li><code>nsidc_south_vrt</code></li>
-<li><code>nsidc_south_vrt_text</code></li>
+<li><code><a href="reference/nsidc_south_files.html">nsidc_north_files()</a></code></li>
+<li><code><a href="reference/nsidc_south_ftp.html">nsidc_north_ftp()</a></code></li>
+<li><code><a href="reference/nsidc_south_vrt.html">nsidc_north_vrt()</a></code></li>
+<li><code><a href="reference/nsidc_south_vrt_text.html">nsidc_north_vrt_text()</a></code></li>
+<li><code><a href="reference/nsidc_south_files.html">nsidc_south_files()</a></code></li>
+<li><code><a href="reference/nsidc_south_ftp.html">nsidc_south_ftp()</a></code></li>
+<li><code><a href="reference/nsidc_south_vrt.html">nsidc_south_vrt()</a></code></li>
+<li><code><a href="reference/nsidc_south_vrt_text.html">nsidc_south_vrt_text()</a></code></li>
 </ul>
 <p>The <code>*files()</code> functions return a data frame of dates and URLs. The <code>*_ftp()</code> functions return the actual URL for a given date (a binary file). The <code>*_vrt()</code> functions return the path to a temporary VRT file that wraps the source URL for a given date with a <a href="https://gdal.org/drivers/raster/vrt.html">GDAL VRT</a> virtual raster. The <code>*_vrt_text()</code> functions return the contents of the VRT file for a given date.</p>
 <p>The <code>read_seaice()</code> function defined below relies on dev-vapour package and wraps up the above to drive GDAL to return the data for a given data on your raster grid of choice.</p>
