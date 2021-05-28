@@ -21,18 +21,18 @@ various reasons I don’t want the read function to be in this package.
 
 If you aren’t comfortable installing the development version of
 [vapour](https://github.com/hypertidy/vapour.git) (instructions are
-given by the example function), the please don’t actually try to run the
-example. You can explore the sources and temporary files created by the
-functions in this package, they are
+given by the example function), then please don’t actually try to run
+the example. You can explore the sources and temporary files created by
+the functions in this package, they are
 
--   `nsidc_north_files`
--   `nsidc_north_ftp`
--   `nsidc_north_vrt`
--   `nsidc_north_vrt_text`
--   `nsidc_south_files`
--   `nsidc_south_ftp`
--   `nsidc_south_vrt`
--   `nsidc_south_vrt_text`
+-   `nsidc_north_files()`
+-   `nsidc_north_ftp()`
+-   `nsidc_north_vrt()`
+-   `nsidc_north_vrt_text()`
+-   `nsidc_south_files()`
+-   `nsidc_south_ftp()`
+-   `nsidc_south_vrt()`
+-   `nsidc_south_vrt_text()`
 
 The `*files()` functions return a data frame of dates and URLs. The
 `*_ftp()` functions return the actual URL for a given date (a binary

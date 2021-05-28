@@ -29,16 +29,16 @@ package must exist to provide the tools for that to work, but for various reason
 
 ## Work in progress
 
-If you aren't comfortable installing the development version of [vapour](https://github.com/hypertidy/vapour.git) (instructions are given by the example function), the please don't actually try to run the example. You can explore the sources and temporary files created by the functions in this package, they are 
+If you aren't comfortable installing the development version of [vapour](https://github.com/hypertidy/vapour.git) (instructions are given by the example function), then please don't actually try to run the example. You can explore the sources and temporary files created by the functions in this package, they are 
 
-- `nsidc_north_files`
-- `nsidc_north_ftp`
-- `nsidc_north_vrt`
-- `nsidc_north_vrt_text`
-- `nsidc_south_files`
-- `nsidc_south_ftp`
-- `nsidc_south_vrt`
-- `nsidc_south_vrt_text`
+- `nsidc_north_files()`
+- `nsidc_north_ftp()`
+- `nsidc_north_vrt()`
+- `nsidc_north_vrt_text()`
+- `nsidc_south_files()`
+- `nsidc_south_ftp()`
+- `nsidc_south_vrt()`
+- `nsidc_south_vrt_text()`
 
 The `*files()` functions return a data frame of dates and URLs. The `*_ftp()` functions return the actual URL for a given date (a binary file). The `*_vrt()` functions return the path to a temporary VRT file that wraps the source URL for a given date with a [GDAL VRT](https://gdal.org/drivers/raster/vrt.html) virtual raster. The `*_vrt_text()` functions return the contents of the VRT file for a given date. 
 
