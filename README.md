@@ -49,7 +49,7 @@ on your raster grid of choice.
 This package contains a file list (where the file is on the internet,
 and the date it applies to) for a data file, and will construct a raster
 format that can be used to read the data directly. This happens via
-GDAL, using its virtual raster format “VRT”. A temporary file is created
+GDAL, using its virtual raster format VRT. A temporary file is created
 to store the information about the file at the URL, and then GDAL does
 the rest, downloading the file and reading from it into whatever
 grid/projection we specify.
@@ -78,6 +78,8 @@ VRT file path at their raster read functions. 👍
 -   speed it up, currently a bit slow (25s for each file, but subsequent
     read of each day is fast because the file seems to be cached by GDAL
     or the OS)
+-   put the scaling and missing value setting in the VRT (currently use
+    of these by raster/stars/terra will get the original byte values)
 
 These files are binary and read over FTP, so the entire file is
 downloaded somewhere by GDAL (they are small). Other sources use GeoTIFF
