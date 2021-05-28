@@ -1,6 +1,6 @@
 read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south")) {
 
-  vers <- try(packageVersion("vapour"))
+  vers <- try(packageVersion("vapour"), silent = TRUE)
   if (inherits(vers, "try-error")) vers <- "0."
   if (vers < "0.5.5.9602") {
     stop("the development version of {vapour} is required, at least 0.5.5.9602
@@ -34,11 +34,11 @@ read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "sout
   l <- vector("list", length(ii))
   for (i in ii) {
     if (i == 1) {
-      vfile <- south_nsidc_vrt(date)
+      vfile <- nsidc_south_vrt(date)
     } else {
-      vfile <- north_nsidc_vrt(date)
+      vfile <- nsidc_north_vrt(date)
     }
-    prj <- r@crs@projargs
+    prj <- ext@crs@projargs
     if (is.na(prj) || nchar(prj) == 0) stop("no valid projection metadata on 'xylim', this must be present")
     l[[i]] <- vapour::vapour_warp_raster(vfile, extent = raster::extent(ext), dimension = dim(ext)[2:1],
                                          wkt = vapour::vapour_srs_wkt(raster::projection(ext)))[[1L]]

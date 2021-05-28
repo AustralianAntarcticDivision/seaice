@@ -12,14 +12,18 @@ The goal of seaice is to read sea ice concentration data directly from
 the internet. This package contains functions to find the right file URL
 for a given date, for either northern or southern hemisphere data.
 
-There are no read functions in the package itself, but there is example
-code to use for this. See examples below. This package contains a file
-list (where the file is on the internet, and the date it applies to) for
-a data file, and will construct a raster format that can be used to read
-the data directly. This happens via GDAL, using its virtual raster
-format “VRT”. A temporary file is created to store the information about
-the file at the URL, and then GDAL does the rest, downloading the file
-and reading from it into whatever grid/projection we specify.
+NOTE: you don’t need to use the functions in this package, see the
+example below which obtains a wrapper function `read_seaice()`. This
+package must exist to provide the tools for that to work, but for
+various reasons I don’t want the read function to be in this package.
+
+This package contains a file list (where the file is on the internet,
+and the date it applies to) for a data file, and will construct a raster
+format that can be used to read the data directly. This happens via
+GDAL, using its virtual raster format “VRT”. A temporary file is created
+to store the information about the file at the URL, and then GDAL does
+the rest, downloading the file and reading from it into whatever
+grid/projection we specify.
 
 With this we can
 
@@ -43,6 +47,14 @@ With this we can
     read of each day is fast because the file seems to be cached by GDAL
     or the OS)
 
+These files are binary and read over FTP, so the entire file is
+downloaded somewhere by GDAL (they are small). Other sources use GeoTIFF
+or NetCDF and we are exploring including those as well.
+
+Let us know what you think! See the [Issues
+tab](https://github.com/AustralianAntarcticDivision/seaice/issues) to
+discuss, or post information about any problems you encounter.
+
 ## Installation
 
 You can install the development version from
@@ -55,13 +67,36 @@ remotes::install_github("AustralianAntarcticDivision/seaice")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to read sea ice data for any
+date since 1978-10-26. The data is projected onto a raster grid, with a
+global default provided. You can use the `xylim` argument to specify a
+specific raster in any projection.
+
+Go with the default.
 
 ``` r
 library(seaice)
 source(system.file("examples/read_seaice.R", package = "seaice", mustWork = TRUE))
 library(raster)  # we could use terra or stars or whatever, see todo 
 #> Loading required package: sp
+
+icecol <- grey.colors(100)
+zl <- c(1, 100)
+ice0 <- read_seaice("2020-10-15")
+plot(ice0, col = icecol, zlim = zl)
+```
+
+<img src="man/figures/README-example-1.png" width="100%" />
+
+Usually we will want something more specific, like only the southern
+hemisphere. To do that, define the right raster grid and set the `xylim`
+argument with it.
+
+The source data for this function is 25km pixels, in a polar grid. We
+choose 0.2 in degrees as the resolution (about a fifth of 100km which is
+about the distance in a degree along a great circle).
+
+``` r
 r <- raster(extent(-180, 180, -72, -55), res = 0.2, crs = "+proj=longlat")
 (ice <- read_seaice("2020-10-15", xylim = r))
 #> class      : RasterLayer 
@@ -73,12 +108,10 @@ r <- raster(extent(-180, 180, -72, -55), res = 0.2, crs = "+proj=longlat")
 #> names      : layer 
 #> values     : 1.2, 100  (min, max)
 
-icecol <- grey.colors(100)
-zl <- c(1, 100)
 plot(ice, col = icecol, zlim = zl)
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-custom-1.png" width="100%" />
 
 Or we can pick our own projection/grid that we want.
 
@@ -95,6 +128,39 @@ contour(setValues(rg, ll[,2]), add = TRUE)
 ```
 
 <img src="man/figures/README-projection-1.png" width="100%" />
+
+To get exactly the grid used by this source data, use a bit of a trick.
+
+``` r
+tfile <- nsidc_south_vrt() ## date does not matter
+## this is the grid, used by NSIDC, here in the abstract (no data in it)
+g <- raster(raster(tfile))
+
+native <- read_seaice("2020-10-15", xylim = g)
+plot(native, col = icecol, zlim = zl)
+```
+
+<img src="man/figures/README-native-1.png" width="100%" />
+
+This grid is an old one, defined as ‘EPSG:3412’.
+
+``` r
+print(native)
+#> class      : RasterLayer 
+#> dimensions : 332, 316, 104912  (nrow, ncol, ncell)
+#> resolution : 25000, 25000  (x, y)
+#> extent     : -3950000, 3950000, -3950000, 4350000  (xmin, xmax, ymin, ymax)
+#> crs        : +proj=stere +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+#> source     : memory
+#> names      : layer 
+#> values     : 1.2, 100  (min, max)
+```
+
+# Get involved
+
+Let us know what you think! See the [Issues
+tab](https://github.com/AustralianAntarcticDivision/seaice/issues) to
+discuss, or post information about any problems you encounter.
 
 ## Code of Conduct
 

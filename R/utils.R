@@ -5,6 +5,8 @@ globalVariables(c("nsidc_south_sources",
   x[x > 250] <- NA
   x / 2.5
 }
+
+.si_default_date <- function() nsidc_north_sources$date[nrow(nsidc_north_sources)]
 .si_timedate <- function(x) {
   as.POSIXct(x, tz = "UTC")
 }

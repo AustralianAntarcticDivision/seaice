@@ -37,19 +37,22 @@ nsidc_north_files <- function() {
 #'
 #' @return FTP url of NSIDC binary file
 #' @export
-#' @aliases north_nsidc_ftp
+#' @aliases nsidc_north_ftp
 #' @examples
-#' south_nsidc_ftp("2010-01-01")
-#' north_nsidc_ftp("2010-01-01")
-south_nsidc_ftp <- function(date) {
+#' nsidc_south_ftp("2010-01-01")
+#' nsidc_north_ftp("2010-01-01")
+nsidc_south_ftp <- function(date) {
+  if (missing(date)) date <- .si_default_date()
   date <- .si_timedate(date)
   files <- nsidc_south_files()
   files$url[findInterval(date, files$date)]
 }
 
 #' @export
-#' @name south_nsidc_ftp
-north_nsidc_ftp <- function(date) {
+#' @name nsidc_south_ftp
+nsidc_north_ftp <- function(date) {
+  if (missing(date)) date <- .si_default_date()
+
   date <- .si_timedate(date)
   files <- nsidc_north_files()
 
@@ -65,15 +68,17 @@ north_nsidc_ftp <- function(date) {
 #'
 #' @return VRT text, used by GDAL
 #' @export
-#' @aliases north_nsidc_text
+#' @aliases nsidc_north_text
 #' @importFrom glue glue
 #' @examples
-#' south_nsidc_vrt_text("2010-01-01")
-#' north_nsidc_vrt_text("2010-01-01")
-south_nsidc_vrt_text <- function(date) {
+#' nsidc_south_vrt_text("2010-01-01")
+#' nsidc_north_vrt_text("2010-01-01")
+nsidc_south_vrt_text <- function(date) {
+  if (missing(date)) date <- .si_default_date()
+
   date <- .si_timedate(date)
 
-  FTP <- glue::glue("/vsicurl/{south_nsidc_ftp(date)}")
+  FTP <- glue::glue("/vsicurl/{nsidc_south_ftp(date)}")
   glue::glue(
     '<VRTDataset rasterXSize="316" rasterYSize="332">
   <VRTRasterBand dataType="Byte" band="1" subClass="VRTRawRasterBand">
@@ -89,11 +94,13 @@ south_nsidc_vrt_text <- function(date) {
 }
 
 #' @export
-#' @name south_nsidc_vrt_text
-north_nsidc_vrt_text <- function(date) {
+#' @name nsidc_south_vrt_text
+nsidc_north_vrt_text <- function(date) {
+  if (missing(date)) date <- .si_default_date()
+
   date <- .si_timedate(date)
 
-  FTP <- glue::glue("/vsicurl/{north_nsidc_ftp(date)}")
+  FTP <- glue::glue("/vsicurl/{nsidc_north_ftp(date)}")
   glue::glue('<VRTDataset rasterXSize="304" rasterYSize="448">
   <VRTRasterBand dataType="Byte" band="1" subClass="VRTRawRasterBand">
     <SourceFilename relativetoVRT="1">{FTP}</SourceFilename>
@@ -118,24 +125,28 @@ north_nsidc_vrt_text <- function(date) {
 #'
 #' @return VRT tempfile, to be used by GDAL
 #' @export
-#' @aliases north_nsidc_vrt
+#' @aliases nsidc_north_vrt
 #' @examples
-#' south_nsidc_vrt("2010-01-01")
-#' north_nsidc_vrt("2010-01-01")
-south_nsidc_vrt <- function(date) {
+#' nsidc_south_vrt("2010-01-01")
+#' nsidc_north_vrt("2010-01-01")
+nsidc_south_vrt <- function(date) {
+  if (missing(date)) date <- .si_default_date()
+
   date <- .si_timedate(date)
 
   tfile <- tempfile(fileext = ".vrt")
-  writeLines(south_nsidc_vrt_text(date), tfile)
+  writeLines(nsidc_south_vrt_text(date), tfile)
   tfile
 }
 
 #' @export
-#' @name south_nsidc_vrt
-north_nsidc_vrt <- function(date) {
+#' @name nsidc_south_vrt
+nsidc_north_vrt <- function(date) {
+  if (missing(date)) date <- .si_default_date()
+
   date <- .si_timedate(date)
 
   tfile <- tempfile(fileext = ".vrt")
-  writeLines(north_nsidc_vrt_text(date), tfile)
+  writeLines(nsidc_north_vrt_text(date), tfile)
   tfile
 }

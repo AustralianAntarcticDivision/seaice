@@ -82,7 +82,7 @@ library(vapour)
 dates <- seq(as.Date("2002-01-01"), by = "15 days", length = 20)
 for (i in seq_along(dates)) {
   date <- dates[i]
-  vfile <- south_nsidc_vrt(as.Date(date))
+  vfile <- nsidc_south_vrt(as.Date(date))
 
   v <- vapour_warp_raster(vfile, extent = ex, dimension = dm,
                         wkt = vapour_srs_wkt(crs))
