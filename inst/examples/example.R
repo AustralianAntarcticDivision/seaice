@@ -1,46 +1,27 @@
+system.time({
 
-read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south")) {
-  ## replace with the files function doing a guess at the file names, eventually build a time-map of the tokens
-  if (date > seaice:::.si_timedate("2021-05-23")) {
-    stop("latest available date is 2021-05-23 atm")
-  }
 
-  if (date < seaice:::.si_timedate("1978-10-26")) {
-    stop("earliest available date is 1978-10-26 atm")
-  }
+#dates <- as.POSIXct(seq(as.Date("2020-01-01"), length.out = 20, by = "2 days"))
+#xye <- raster::projectExtent(raster::raster(extent(-180, 180, -90, 90), nrows = 360, ncols = 720, crs = "+proj=longlat"), "+proj=times")
+xye <- raster(extent(-16704254, 16694259, -19010700, 20003931), ncols = 180, nrows = 360, crs = "+proj=tmerc")
 
-  if (missing(date)) {
-    ## replace with lookup info about what dates there are
-    date <- seaice:::.si_defaultdate()
-  }
-  hemi <- match.arg(hemi)
-  ii <- switch(hemi,
-               both = 1:2, north = 2, south = 1)
-  ext <- seaice:::.si_defaultgrid(xylim)
-  l <- vector("list", length(ii))
-  for (i in ii) {
-    if (i == 1) {
-      vfile <- south_nsidc_vrt(date)
-    } else {
-      vfile <- north_nsidc_vrt(date)
-    }
-    l[[i]] <- vapour::vapour_warp_raster(vfile, extent = raster::extent(ext), dimension = dim(ext)[2:1],
-                          wkt = vapour::vapour_srs_wkt(raster::projection(ext)))[[1L]]
+xye <- raster(extent(-50, 20, -70, -50), res = .25)
+projection(xye) <- "+proj=longlat"
+x <- read_seaice("2020-08-01", xylim = )
+})
 
-  }
-  if (length(ii) == 2L) {
-    vals1 <- l[[1L]]
-    vals2 <- l[[2L]]
-    vals1[vals1 > 250 | vals1 < 1] <- NA
-    vals2[vals2 > 250 | vals2 < 1] <- NA
-    out <- ifelse(is.na(vals1), vals2, vals1)
+par(mar = rep(0, 4))
+image(trim(x), col = grey.colors(256), zlim = c(1, 100), asp = 1, axes = F)
 
-  } else {
-    out <- unlist(l)
-  }
-  raster::setValues(ext, seaice:::.si_rescale(out))
-}
-x <- read_seaice("2020-01-01")
+xy <- rgdal::project(cbind(xFromCell(x, 1:ncell(x)), yFromCell(x, 1:ncell(x))), "+proj=tmerc", inv = TRUE)
+lon <- setValues(x, xy[,1])
+lat <- setValues(x, xy[,2])
+badlat <- abs(lat) > 65
+badlon <- abs(lon) > 175
+lon[badlat] <- NA
+lon[badlon] <- NA
+contour(lon, add = TRUE, levels = seq(-165, 165, by = 15))
+contour(lat, add = TRUE)
 
 par(mfrow = c(2, 1))
 d1 <- read_seaice("2020-10-01", raster(extent(100, 180, -70, -60),res = 0.2,  crs = "+proj=longlat"))
@@ -51,6 +32,13 @@ plot(d2, zlim = c(0.1, 100), col = grey.colors(64))
 
 
 
+library(terra)
+a <- rast(raadtools::readsst())
+
+xya <- project(a, "+proj=tmerc")
+plot(xya)
+
+plot(projectRaster(a, xya))
 
 
 

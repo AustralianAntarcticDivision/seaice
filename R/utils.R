@@ -1,4 +1,5 @@
-globalVariables("nsidc_south_sources")
+globalVariables(c("nsidc_south_sources",
+                  "nsidc_north_sources"))
 
 .si_rescale <- function(x) {
   x[x > 250] <- NA
