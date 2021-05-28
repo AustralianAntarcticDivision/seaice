@@ -17,6 +17,9 @@ example below which obtains a wrapper function `read_seaice()`. This
 package must exist to provide the tools for that to work, but for
 various reasons I don’t want the read function to be in this package.
 
+If you want more direct access to the entire sea ice data set [read this
+blog post](https://ropensci.org/blog/2018/11/13/antarctic/).
+
 ## Work in progress
 
 If you aren’t comfortable installing the development version of

@@ -27,6 +27,8 @@ find the right file URL for a given date, for either northern or southern hemisp
 NOTE: you don't need to use the functions in this package, see the example below which obtains a wrapper function `read_seaice()`. This
 package must exist to provide the tools for that to work, but for various reasons I don't want the read function to be in this package.
 
+If you want more direct access to the entire sea ice data set [read this blog post](https://ropensci.org/blog/2018/11/13/antarctic/). 
+
 ## Work in progress
 
 If you aren't comfortable installing the development version of [vapour](https://github.com/hypertidy/vapour.git) (instructions are given by the example function), then please don't actually try to run the example. You can explore the sources and temporary files created by the functions in this package, they are 
