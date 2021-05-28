@@ -87,7 +87,7 @@
 </ul>
 <p>The <code>*files()</code> functions return a data frame of dates and URLs. The <code>*_ftp()</code> functions return the actual URL for a given date (a binary file). The <code>*_vrt()</code> functions return the path to a temporary VRT file that wraps the source URL for a given date with a <a href="https://gdal.org/drivers/raster/vrt.html">GDAL VRT</a> virtual raster. The <code>*_vrt_text()</code> functions return the contents of the VRT file for a given date.</p>
 <p>The <code>read_seaice()</code> function defined below relies on dev-vapour package and wraps up the above to drive GDAL to return the data for a given data on your raster grid of choice.</p>
-<p>This package contains a file list (where the file is on the internet, and the date it applies to) for a data file, and will construct a raster format that can be used to read the data directly. This happens via GDAL, using its virtual raster format “VRT”. A temporary file is created to store the information about the file at the URL, and then GDAL does the rest, downloading the file and reading from it into whatever grid/projection we specify.</p>
+<p>This package contains a file list (where the file is on the internet, and the date it applies to) for a data file, and will construct a raster format that can be used to read the data directly. This happens via GDAL, using its virtual raster format VRT. A temporary file is created to store the information about the file at the URL, and then GDAL does the rest, downloading the file and reading from it into whatever grid/projection we specify.</p>
 <p>With this we can</p>
 <ul>
 <li>read any date since 1978-10-26 (currently we are a bit limited to the latest but see todo)</li>
@@ -106,6 +106,7 @@
 <li>write helpers for commonly used grids (e.g. 0.25 degree longlat, Mercator, or local equal area, etc)</li>
 <li>write helpers for terra, stars, base image(), netcdf output, whatever</li>
 <li>speed it up, currently a bit slow (25s for each file, but subsequent read of each day is fast because the file seems to be cached by GDAL or the OS)</li>
+<li>put the scaling and missing value setting in the VRT (currently use of these by raster/stars/terra will get the original byte values)</li>
 </ul>
 <p>These files are binary and read over FTP, so the entire file is downloaded somewhere by GDAL (they are small). Other sources use GeoTIFF or NetCDF and we are exploring including those as well.</p>
 <p>Let us know what you think! See the <a href="https://github.com/AustralianAntarcticDivision/seaice/issues">Issues tab</a> to discuss, or post information about any problems you encounter.</p>
