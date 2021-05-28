@@ -71,7 +71,7 @@ a raster grid, with a global default provided. You can use the `xylim` argument 
 
 Go with the default.
 
-```{r example}
+```{r default}
 library(seaice)
 source(system.file("examples/read_seaice.R", package = "seaice", mustWork = TRUE))
 library(raster)  # we could use terra or stars or whatever, see todo 

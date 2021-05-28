@@ -86,7 +86,7 @@ ice0 <- read_seaice("2020-10-15")
 plot(ice0, col = icecol, zlim = zl)
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-default-1.png" width="100%" />
 
 Usually we will want something more specific, like only the southern
 hemisphere. To do that, define the right raster grid and set the `xylim`
