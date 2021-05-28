@@ -85,8 +85,12 @@
 <li>be smarter about filling in missing days</li>
 <li>write helpers for commonly used grids (e.g. 0.25 degree longlat, Mercator, or local equal area, etc)</li>
 <li>write helpers for terra, stars, base image(), netcdf output, whatever</li>
-<li>speed it up, currently a bit slow ## Installation</li>
+<li>speed it up, currently a bit slow (25s for each file, but subsequent read of each day is fast because the file seems to be cached by GDAL or the OS)</li>
 </ul>
+</div>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
