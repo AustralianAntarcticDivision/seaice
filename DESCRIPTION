@@ -1,6 +1,6 @@
 Package: seaice
 Title: Build Temporary Virtual Raster Files for Sea Ice Concentration
-Version: 0.0.0.9080
+Version: 0.0.0.9100
 Authors@R: 
     person(given = "Michael",
            family = "Sumner",

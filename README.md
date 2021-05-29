@@ -195,6 +195,22 @@ print(native)
 #> values     : 1.2, 100  (min, max)
 ```
 
+## AMSR2 3.125 southern hemisphere files
+
+These files are GeoTIFF, so we need only use a VSI path to the URL
+itself.
+
+See the example source.
+
+``` r
+fine <- raster(extent(-2e6, 2e6, -2e6, 1e6), res = 3000, crs = "+proj=laea +lat_0=-61 +lon_0=147")
+amsr2_ice <- read_amsr2("2020-10-15", xylim = fine)
+
+plot(amsr2_ice, col = icecol, zlim = zl, asp = 1)
+```
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
 # Get involved
 
 Let us know what you think! See the [Issues

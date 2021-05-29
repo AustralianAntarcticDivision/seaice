@@ -1,5 +1,4 @@
-read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south")) {
-
+.si_standard_version_check <- function() {
   vers <- try(packageVersion("vapour"), silent = TRUE)
   if (inherits(vers, "try-error")) vers <- "0."
   if (vers < "0.5.5.9602") {
@@ -14,6 +13,43 @@ read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "sout
          and if an earlier version of {vapour} is installed try restarting R first
          ")
   }
+
+}
+
+
+
+read_amsr2 <- function(date, xylim = NULL, ...) {
+  .si_standard_version_check()
+
+  ## replace with the files function doing a guess at the file names, eventually build a time-map of the tokens
+  if (seaice:::.si_timedate(date) > amsr2_south_sources$date[nrow(amsr2_south_sources)]) {
+    stop(glue::glue("latest available date is {amsr2_south_sources$date[nrow(amsr2_south_sources)]} atm"))
+  }
+
+  if (seaice:::.si_timedate(date) < amsr2_south_sources$date[1]) {
+    stop(glue::glue("earliest available date is {amsr2_south_sources$date[1]} atm"))
+  }
+
+  if (missing(date)) {
+    ## replace with lookup info about what dates there are
+    date <- max(amsr2_south_sources$date)
+  }
+  ext <- seaice:::.si_amsr2_defaultgrid(xylim)
+
+  vfile <- amsr2_south_vsi(date)
+    prj <- ext@crs@projargs
+    if (is.na(prj) || nchar(prj) == 0) stop("no valid projection metadata on 'xylim', this must be present")
+    l <- vapour::vapour_warp_raster(vfile, extent = raster::extent(ext), dimension = dim(ext)[2:1],
+                                         wkt = vapour::vapour_srs_wkt(raster::projection(ext)))[[1L]]
+
+  raster::setValues(ext, l)
+}
+
+
+
+read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south")) {
+ .si_standard_version_check()
+
     ## replace with the files function doing a guess at the file names, eventually build a time-map of the tokens
   if (date > seaice:::.si_timedate("2021-05-23")) {
     stop("latest available date is 2021-05-23 atm")
@@ -30,7 +66,7 @@ read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "sout
   hemi <- match.arg(hemi)
   ii <- switch(hemi,
                both = 1:2, north = 2, south = 1)
-  ext <- seaice:::.si_defaultgrid(xylim)
+  ext <- seaice:::.si_nsidc_defaultgrid(xylim)
   l <- vector("list", length(ii))
   for (i in ii) {
     if (i == 1) {

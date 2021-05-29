@@ -1,5 +1,6 @@
 globalVariables(c("nsidc_south_sources",
-                  "nsidc_north_sources"))
+                  "nsidc_north_sources",
+                  "amsr2_south_sources"))
 
 .si_rescale <- function(x) {
   x[x > 250] <- NA
@@ -14,7 +15,7 @@ globalVariables(c("nsidc_south_sources",
   max(nsidc_south_files()$date)
 }
 #' @importFrom raster raster projection extent
-.si_defaultgrid <- function(x) {
+.si_nsidc_defaultgrid <- function(x) {
 
   if (missing(x) || is.null(x)) {
     return(raster::raster(raster::extent(-180, 180, -90, 90), res = 0.25, crs = "OGC:CRS84"))
@@ -27,6 +28,27 @@ globalVariables(c("nsidc_south_sources",
         ext <- raster::projection(ext) <- "+proj=longlat +datum=WGS84"
       }
     }
+
+
+
+  ext
+}
+
+
+#' @importFrom raster raster projection extent
+.si_amsr2_defaultgrid <- function(x) {
+
+  if (missing(x) || is.null(x)) {
+    return(raster::raster(raster::extent(-180, 180, -82, -45), res = 0.025, crs = "OGC:CRS84"))
+  }
+  if (inherits(x, "RasterLayer")) {
+    return(x)
+  } else {
+    ext <- raster::raster(x, res = 0.25, crs = "OGC:CRS84")
+    if (is.na(raster::projection(ext))) {
+      ext <- raster::projection(ext) <- "+proj=longlat +datum=WGS84"
+    }
+  }
 
 
 
