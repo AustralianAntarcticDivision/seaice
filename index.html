@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">seaice</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9080</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9100</span>
       </span>
     </div>
 
@@ -184,6 +184,18 @@
 <span class="co">#&gt; source     : memory</span>
 <span class="co">#&gt; names      : layer </span>
 <span class="co">#&gt; values     : 1.2, 100  (min, max)</span></code></pre></div>
+</div>
+<div id="amsr2-3125-southern-hemisphere-files" class="section level2">
+<h2 class="hasAnchor">
+<a href="#amsr2-3125-southern-hemisphere-files" class="anchor"></a>AMSR2 3.125 southern hemisphere files</h2>
+<p>These files are GeoTIFF, so we need only use a VSI path to the URL itself.</p>
+<p>See the example source.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2e6</span>, <span class="fl">2e6</span>, <span class="op">-</span><span class="fl">2e6</span>, <span class="fl">1e6</span><span class="op">)</span>, res <span class="op">=</span> <span class="fl">3000</span>, crs <span class="op">=</span> <span class="st">"+proj=laea +lat_0=-61 +lon_0=147"</span><span class="op">)</span>
+<span class="va">amsr2_ice</span> <span class="op">&lt;-</span> <span class="fu">read_amsr2</span><span class="op">(</span><span class="st">"2020-10-15"</span>, xylim <span class="op">=</span> <span class="va">fine</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">amsr2_ice</span>, col <span class="op">=</span> <span class="va">icecol</span>, zlim <span class="op">=</span> <span class="va">zl</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
 </div>
 </div>
 <div id="get-involved" class="section level1">

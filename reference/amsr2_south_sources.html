@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate NSIDC filename — nsidc_south_vrt • seaice</title>
+<title>Files for AMSR2 sea ice concentration — amsr2_south_sources • seaice</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Generate NSIDC filename — nsidc_south_vrt" />
-<meta property="og:description" content="Temp file contains text of Virtual Raster" />
+<meta property="og:title" content="Files for AMSR2 sea ice concentration — amsr2_south_sources" />
+<meta property="og:description" content="The file list is cached to avoid determining the exact file name ... we
+might come up with a better solution. The available dates are also padded
+out to allow the last valid date to stand in for a missing one." />
 
 
 
@@ -106,39 +108,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate NSIDC filename</h1>
+    <h1>Files for AMSR2 sea ice concentration</h1>
     
-    <div class="hidden name"><code>nsidc_south_vrt.Rd</code></div>
+    <div class="hidden name"><code>amsr2_south_sources.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Temp file contains text of Virtual Raster</p>
+    <p>The file list is cached to avoid determining the exact file name ... we
+might come up with a better solution. The available dates are also padded
+out to allow the last valid date to stand in for a missing one.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nsidc_south_vrt</span><span class='op'>(</span><span class='va'>date</span><span class='op'>)</span>
+    <pre class="usage"><span class='va'>amsr2_south_sources</span></pre>
 
-<span class='fu'>nsidc_north_vrt</span><span class='op'>(</span><span class='va'>date</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>date</th>
-      <td><p>date-time, date, or convertible character string</p></td>
-    </tr>
-    </table>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <p>data frame of <code>date</code> and <code>url</code></p>
 
-    <p>VRT tempfile, to be used by GDAL</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Details</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>nsidc_south_vrt</span><span class='op'>(</span><span class='st'>"2010-01-01"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpEwp79b/file12474af07573.vrt"</div><div class='input'><span class='fu'>nsidc_north_vrt</span><span class='op'>(</span><span class='st'>"2010-01-01"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpEwp79b/file124770aef774.vrt"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
