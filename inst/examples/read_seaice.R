@@ -47,9 +47,9 @@ read_amsr2 <- function(date, xylim = NULL, ...) {
 
 
 
-read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south")) {
+read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south"), .local_root = NULL) {
  .si_standard_version_check()
-
+date <- seaice:::.si_timedate(date)
     ## replace with the files function doing a guess at the file names, eventually build a time-map of the tokens
   if (date > seaice:::.si_timedate("2021-05-23")) {
     stop("latest available date is 2021-05-23 atm")
@@ -70,9 +70,9 @@ read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "sout
   l <- vector("list", length(ii))
   for (i in ii) {
     if (i == 1) {
-      vfile <- nsidc_south_vrt(date)
+      vfile <- nsidc_south_vrt(date, .local_root = .local_root)
     } else {
-      vfile <- nsidc_north_vrt(date)
+      vfile <- nsidc_north_vrt(date, .local_root = .local_root)
     }
     prj <- ext@crs@projargs
     if (is.na(prj) || nchar(prj) == 0) stop("no valid projection metadata on 'xylim', this must be present")
@@ -90,5 +90,5 @@ read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "sout
   } else {
     out <- unlist(l)
   }
-  raster::setValues(ext, seaice:::.si_rescale(out))
+  raster::setZ(raster::setValues(ext, seaice:::.si_rescale(out)), date[1L])
 }

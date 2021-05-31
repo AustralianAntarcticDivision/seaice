@@ -5,6 +5,8 @@
 #' Time series has been expanded to be daily, by infilling a date for any missing,
 #' with this indicated on the `miss` column.
 #'
+#' @param ... ignored for now
+#' @param .local_root allows local use, to shortcut and use the local data library (under expert guidance)
 #' @return data frame of `date` and `url` and `miss` which is `TRUE` if infilled
 #' @export
 #' @aliases nsidc_north_files
@@ -12,8 +14,13 @@
 #' @examples
 #' nsidc_south_files()
 #' nsidc_north_files()
-nsidc_south_files <- function() {
+nsidc_south_files <- function(..., .local_root = NULL) {
   files <- nsidc_south_sources
+  if (!is.null(.local_root)) {
+    ## keep the slash
+    files$url <- gsub("^ftp:/", .local_root, files$url)
+  }
+
   fulldates <- seq(min(files$date), max(files$date), by = "1 day")
   idx <- findInterval(as.integer(fulldates), as.integer(files$date))
   tibble::tibble(date = fulldates, url = files$url[idx], miss = duplicated(idx))
@@ -21,8 +28,13 @@ nsidc_south_files <- function() {
 
 #' @name nsidc_south_files
 #' @export
-nsidc_north_files <- function() {
+nsidc_north_files <- function(..., .local_root = NULL) {
   files <- nsidc_north_sources
+  if (!is.null(.local_root)) {
+    ## keep the slash
+    files$url <- gsub("^ftp:/", .local_root, files$url)
+  }
+
   fulldates <- seq(min(files$date), max(files$date), by = "1 day")
   idx <- findInterval(as.integer(fulldates), as.integer(files$date))
   tibble::tibble(date = fulldates, url = files$url[idx], miss = duplicated(idx))
@@ -35,26 +47,28 @@ nsidc_north_files <- function() {
 #' Details
 #' @param date date-time, date, or convertible character string
 #'
+#' @inheritDotParams nsidc_south_files
+#' @inheritParams nsidc_south_files
 #' @return FTP url of NSIDC binary file
 #' @export
 #' @aliases nsidc_north_ftp
 #' @examples
 #' nsidc_south_ftp("2010-01-01")
 #' nsidc_north_ftp("2010-01-01")
-nsidc_south_ftp <- function(date) {
+nsidc_south_ftp <- function(date, ..., .local_root = NULL) {
   if (missing(date)) date <- .si_default_date()
   date <- .si_timedate(date)
-  files <- nsidc_south_files()
+  files <- nsidc_south_files(.local_root = .local_root)
   files$url[findInterval(date, files$date)]
 }
 
 #' @export
 #' @name nsidc_south_ftp
-nsidc_north_ftp <- function(date) {
+nsidc_north_ftp <- function(date, ..., .local_root = NULL) {
   if (missing(date)) date <- .si_default_date()
 
   date <- .si_timedate(date)
-  files <- nsidc_north_files()
+  files <- nsidc_north_files(.local_root = .local_root)
 
   files$url[findInterval(date, files$date)]
 }
@@ -66,6 +80,8 @@ nsidc_north_ftp <- function(date) {
 #' Details
 #' @param date date-time, date, or convertible character string
 #'
+#' @inheritDotParams nsidc_south_files
+#' @inheritParams nsidc_south_files
 #' @return VRT text, used by GDAL
 #' @export
 #' @aliases nsidc_north_text
@@ -73,12 +89,14 @@ nsidc_north_ftp <- function(date) {
 #' @examples
 #' nsidc_south_vrt_text("2010-01-01")
 #' nsidc_north_vrt_text("2010-01-01")
-nsidc_south_vrt_text <- function(date) {
+nsidc_south_vrt_text <- function(date, ..., .local_root = NULL) {
   if (missing(date)) date <- .si_default_date()
 
   date <- .si_timedate(date)
 
-  FTP <- glue::glue("/vsicurl/{nsidc_south_ftp(date)}")
+  ## probably here we need a vsi function, to pivot on the local_root part
+  vsi_prefix <- if (is.null(.local_root)) "/vsicurl/" else ""
+  FTP <- glue::glue("{vsi_prefix}{nsidc_south_ftp(date, .local_root = .local_root)}")
   glue::glue(
     '<VRTDataset rasterXSize="316" rasterYSize="332">
   <VRTRasterBand dataType="Byte" band="1" subClass="VRTRawRasterBand">
@@ -95,12 +113,12 @@ nsidc_south_vrt_text <- function(date) {
 
 #' @export
 #' @name nsidc_south_vrt_text
-nsidc_north_vrt_text <- function(date) {
+nsidc_north_vrt_text <- function(date, ..., .local_root = NULL) {
   if (missing(date)) date <- .si_default_date()
 
   date <- .si_timedate(date)
-
-  FTP <- glue::glue("/vsicurl/{nsidc_north_ftp(date)}")
+  vsi_prefix <- if (is.null(.local_root)) "/vsicurl/" else ""
+  FTP <- glue::glue("{vsi_prefix}{nsidc_north_ftp(date, .local_root = .local_root)}")
   glue::glue('<VRTDataset rasterXSize="304" rasterYSize="448">
   <VRTRasterBand dataType="Byte" band="1" subClass="VRTRawRasterBand">
     <SourceFilename relativetoVRT="1">{FTP}</SourceFilename>
@@ -123,30 +141,33 @@ nsidc_north_vrt_text <- function(date) {
 #' Details
 #' @param date date-time, date, or convertible character string
 #'
+#' @inheritDotParams nsidc_south_files
+#' @inheritParams nsidc_south_files
+#'
 #' @return VRT tempfile, to be used by GDAL
 #' @export
 #' @aliases nsidc_north_vrt
 #' @examples
 #' nsidc_south_vrt("2010-01-01")
 #' nsidc_north_vrt("2010-01-01")
-nsidc_south_vrt <- function(date) {
+nsidc_south_vrt <- function(date, ..., .local_root = NULL) {
   if (missing(date)) date <- .si_default_date()
 
   date <- .si_timedate(date)
 
   tfile <- tempfile(fileext = ".vrt")
-  writeLines(nsidc_south_vrt_text(date), tfile)
+  writeLines(nsidc_south_vrt_text(date, .local_root = .local_root), tfile)
   tfile
 }
 
 #' @export
 #' @name nsidc_south_vrt
-nsidc_north_vrt <- function(date) {
+nsidc_north_vrt <- function(date, ..., .local_root = NULL) {
   if (missing(date)) date <- .si_default_date()
 
   date <- .si_timedate(date)
 
   tfile <- tempfile(fileext = ".vrt")
-  writeLines(nsidc_north_vrt_text(date), tfile)
+  writeLines(nsidc_north_vrt_text(date, .local_root = .local_root), tfile)
   tfile
 }

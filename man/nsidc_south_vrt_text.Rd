@@ -6,12 +6,20 @@
 \alias{nsidc_north_vrt_text}
 \title{Generate NSIDC Virtual Raster text from a date}
 \usage{
-nsidc_south_vrt_text(date)
+nsidc_south_vrt_text(date, ..., .local_root = NULL)
 
-nsidc_north_vrt_text(date)
+nsidc_north_vrt_text(date, ..., .local_root = NULL)
 }
 \arguments{
 \item{date}{date-time, date, or convertible character string}
+
+\item{...}{
+  Arguments passed on to \code{\link[=nsidc_south_files]{nsidc_south_files}}
+  \describe{
+    \item{\code{}}{}
+  }}
+
+\item{.local_root}{allows local use, to shortcut and use the local data library (under expert guidance)}
 }
 \value{
 VRT text, used by GDAL

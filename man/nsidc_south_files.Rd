@@ -5,9 +5,14 @@
 \alias{nsidc_north_files}
 \title{Files for each hemisphere sea ice concentration (25km)}
 \usage{
-nsidc_south_files()
+nsidc_south_files(..., .local_root = NULL)
 
-nsidc_north_files()
+nsidc_north_files(..., .local_root = NULL)
+}
+\arguments{
+\item{...}{ignored for now}
+
+\item{.local_root}{allows local use, to shortcut and use the local data library (under expert guidance)}
 }
 \value{
 data frame of \code{date} and \code{url} and \code{miss} which is \code{TRUE} if infilled

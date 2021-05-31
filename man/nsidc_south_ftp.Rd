@@ -5,12 +5,20 @@
 \alias{nsidc_north_ftp}
 \title{Generate NSIDC source links from a date}
 \usage{
-nsidc_south_ftp(date)
+nsidc_south_ftp(date, ..., .local_root = NULL)
 
-nsidc_north_ftp(date)
+nsidc_north_ftp(date, ..., .local_root = NULL)
 }
 \arguments{
 \item{date}{date-time, date, or convertible character string}
+
+\item{...}{
+  Arguments passed on to \code{\link[=nsidc_south_files]{nsidc_south_files}}
+  \describe{
+    \item{\code{}}{}
+  }}
+
+\item{.local_root}{allows local use, to shortcut and use the local data library (under expert guidance)}
 }
 \value{
 FTP url of NSIDC binary file

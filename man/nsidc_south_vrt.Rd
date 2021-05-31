@@ -5,12 +5,20 @@
 \alias{nsidc_north_vrt}
 \title{Generate NSIDC filename}
 \usage{
-nsidc_south_vrt(date)
+nsidc_south_vrt(date, ..., .local_root = NULL)
 
-nsidc_north_vrt(date)
+nsidc_north_vrt(date, ..., .local_root = NULL)
 }
 \arguments{
 \item{date}{date-time, date, or convertible character string}
+
+\item{...}{
+  Arguments passed on to \code{\link[=nsidc_south_files]{nsidc_south_files}}
+  \describe{
+    \item{\code{}}{}
+  }}
+
+\item{.local_root}{allows local use, to shortcut and use the local data library (under expert guidance)}
 }
 \value{
 VRT tempfile, to be used by GDAL
