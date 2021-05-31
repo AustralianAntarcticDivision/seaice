@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">seaice</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9200</span>
       </span>
     </div>
 
@@ -115,9 +115,9 @@
     <p>NSIDC</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nsidc_south_vrt_text</span><span class='op'>(</span><span class='va'>date</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>nsidc_south_vrt_text</span><span class='op'>(</span><span class='va'>date</span>, <span class='va'>...</span>, .local_root <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='fu'>nsidc_north_vrt_text</span><span class='op'>(</span><span class='va'>date</span><span class='op'>)</span></pre>
+<span class='fu'>nsidc_north_vrt_text</span><span class='op'>(</span><span class='va'>date</span>, <span class='va'>...</span>, .local_root <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,6 +125,17 @@
     <tr>
       <th>date</th>
       <td><p>date-time, date, or convertible character string</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments passed on to <code><a href='nsidc_south_files.html'>nsidc_south_files</a></code></p><dl>
+    <dt><code></code></dt><dd><p></p></dd>
+  
+</dl></td>
+    </tr>
+    <tr>
+      <th>.local_root</th>
+      <td><p>allows local use, to shortcut and use the local data library (under expert guidance)</p></td>
     </tr>
     </table>
 
