@@ -51,8 +51,9 @@ read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "sout
  .si_standard_version_check()
 date <- seaice:::.si_timedate(date)
     ## replace with the files function doing a guess at the file names, eventually build a time-map of the tokens
-  if (date > seaice:::.si_timedate("2021-05-23")) {
-    stop("latest available date is 2021-05-23 atm")
+latest <- seaice:::.si_default_date()
+  if (date > latest) {
+    stop(sprintf("latest available date is %s atm", latest))
   }
 
   if (date < seaice:::.si_timedate("1978-10-26")) {
