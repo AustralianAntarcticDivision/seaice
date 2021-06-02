@@ -47,7 +47,7 @@ read_amsr2 <- function(date, xylim = NULL, ...) {
 
 
 
-read_seaice <- function(date, xylim = NULL, ..., hemi = c("both", "north", "south"), .local_root = NULL) {
+read_seaice <- function(date, xylim = NULL, ..., rescale = TRUE, hemi = c("both", "north", "south"), .local_root = NULL) {
  .si_standard_version_check()
 date <- seaice:::.si_timedate(date)
     ## replace with the files function doing a guess at the file names, eventually build a time-map of the tokens
@@ -91,5 +91,10 @@ latest <- seaice:::.si_default_date()
   } else {
     out <- unlist(l)
   }
-  raster::setZ(raster::setValues(ext, seaice:::.si_rescale(out)), date[1L])
+  if (rescale) {
+    out <- seaice:::.si_rescale(out)
+    out[out > 100] <- NA
+    out[out < 1] <- NA
+  }
+  raster::setZ(raster::setValues(ext, out), date[1L])
 }
